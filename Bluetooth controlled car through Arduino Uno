@@ -1,0 +1,197 @@
+#define leftPin1  8
+
+#define leftPin2  9
+
+#define rightPin1 10
+
+#define rightPin2 11
+
+char command;
+
+int trigPin = 5;    // TRIG pin
+
+int echoPin = 6;    // ECHO pin
+
+float duration_us, distance_cm;
+
+void setup() {
+
+  pinMode(leftPin1,OUTPUT);
+
+  pinMode(leftPin2,OUTPUT);
+
+  pinMode(rightPin1,OUTPUT);
+
+  pinMode(rightPin2,OUTPUT);
+
+  pinMode(trigPin, OUTPUT);
+
+  // configure the echo pin to input mode
+
+  pinMode(echoPin, INPUT);
+
+  Serial.begin(9600);
+
+}
+
+void loop() {
+
+  
+
+  if(Serial.available()){
+
+    
+
+    command = Serial.read();
+
+    Serial.println(command);  
+
+    switch (command) {
+
+      case 'F':
+
+        {
+
+        digitalWrite(trigPin, HIGH);
+
+        delayMicroseconds(10);
+
+        digitalWrite(trigPin, LOW);
+
+       // measure duration of pulse from ECHO pin
+
+        duration_us = pulseIn(echoPin, HIGH);
+
+       // calculate the distance
+
+        distance_cm = 0.017 * duration_us;
+
+       // print the value to Serial Monitor
+
+        if(distance_cm<=15){
+
+      Stop();
+
+      Back();
+
+      delay(1000);
+
+      Stop();
+
+      Serial.print("distance: ");
+
+      Serial.print(distance_cm);
+
+      Serial.println(" cm");
+
+      Serial.println("object detected");
+
+      }
+
+      else{
+
+        Forward();
+
+        }
+
+       } 
+
+        break;
+
+      case 'B':
+
+        Back();
+
+        break;
+
+      case 'L':
+
+        Left();
+
+        break;
+
+      case 'R':
+
+        Right();
+
+        break;
+
+     case 'S':
+
+        Stop();
+
+        break;
+
+    }
+
+  
+
+  }
+
+}
+
+ void Forward(){
+
+    
+
+    
+
+  digitalWrite(leftPin1,HIGH);
+
+  digitalWrite(leftPin2,LOW);
+
+  digitalWrite(rightPin1,HIGH);
+
+  digitalWrite(rightPin2,LOW);
+
+ }
+
+ void Back(){
+
+  //  Serial.println("backward");
+
+  digitalWrite(leftPin1,LOW);
+
+  digitalWrite(leftPin2,HIGH);
+
+  digitalWrite(rightPin1,LOW);
+
+  digitalWrite(rightPin2,HIGH);
+
+}
+
+ void Left(){
+
+  digitalWrite(leftPin1,LOW);
+
+  digitalWrite(leftPin2,HIGH);
+
+  digitalWrite(rightPin1,HIGH);
+
+  digitalWrite(rightPin2,LOW);
+
+}
+
+ void Right(){
+
+  digitalWrite(leftPin1,HIGH);
+
+  digitalWrite(leftPin2,LOW);
+
+  digitalWrite(rightPin1,LOW);
+
+  digitalWrite(rightPin2,HIGH);
+
+}
+
+void Stop(){
+
+  digitalWrite(leftPin1,LOW);
+
+  digitalWrite(leftPin2,LOW);
+
+  digitalWrite(rightPin1,LOW);
+
+  digitalWrite(rightPin2,LOW);
+
+}
